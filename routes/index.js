@@ -13,5 +13,7 @@ router.get('/connect', (req, res) => AuthController.getConnect(req, res));
 router.get('/disconnect', (req, res) => AuthController.getDisconnect(req, res));
 router.get('/users/me', (req, res) => AuthController.getMe(req, res));
 router.post('/files', (req, res) => FilesController.postUpload(req, res));
+router.get('/files/:id', (req, res) => FilesController.getShow(req, res));
+router.get('/files', (req, res) => FilesController.getIndex(req, res));
 
 export default router;
