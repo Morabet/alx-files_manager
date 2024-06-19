@@ -85,7 +85,9 @@ class FilesController {
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    const file = await fileCollection.findOne({ _id: new ObjectId(fileId), userId: new ObjectId(userId) });
+    const file = await fileCollection.findOne({
+      _id: new ObjectId(fileId), userId: new ObjectId(userId),
+    });
     if (!file) {
       return res.status(404).json({ error: 'Not found' });
     }
@@ -113,9 +115,14 @@ class FilesController {
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    const query = { userId, parentId };
+    const parentObjectId = parentId === '0' ? 0 : new ObjectId(parentId);
     const pageNumber = parseInt(page, 10);
     const pageSize = 20;
+
+    const query = {
+      userId: new ObjectId(userId),
+      parentId: parentObjectId,
+    };
     const pipeline = [
       { $match: query },
       { $skip: pageNumber * pageSize },
