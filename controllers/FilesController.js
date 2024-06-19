@@ -85,7 +85,7 @@ class FilesController {
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
-    const file = await fileCollection.findOne({ _id: new ObjectId(fileId), userId });
+    const file = await fileCollection.findOne({ _id: new ObjectId(fileId), userId: new ObjectId(userId) });
     if (!file) {
       return res.status(404).json({ error: 'Not found' });
     }
@@ -100,7 +100,7 @@ class FilesController {
   }
 
   static async getIndex(req, res) {
-    const { parentId = 0, page = 0 } = req.query;
+    const { parentId = '0', page = '0' } = req.query;
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
     if (!userId) {
