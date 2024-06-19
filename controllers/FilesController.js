@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
+import Queue from 'bull';
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 
@@ -67,6 +68,13 @@ class FilesController {
 
     fileDocument.localPath = localPath;
     const result = await fileCollection.insertOne(fileDocument);
+
+    // Add a job to the queue if the type is image
+    if (type === 'image') {
+      const fileQueue = new Queue('fileQueue');
+      fileQueue.add({ fileId: result.insertedId, userId });
+    }
+
     return res.status(201).json({
       id: result.insertedId, userId, name, type, isPublic, parentId,
     });
@@ -212,6 +220,8 @@ class FilesController {
 
   static async getFile(req, res) {
     const fileId = req.params.id;
+    const { size } = req.query;
+    const validSizes = [500, 250, 100];
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
 
@@ -238,7 +248,11 @@ class FilesController {
     if (file.type === 'folder') {
       return res.status(400).json({ error: 'A folder doesn\'t have content' });
     }
-    const filePath = file.localPath;
+    let filePath = file.localPath;
+    if (size && validSizes.includes(parseInt(size, 10))) {
+      const sizeInt = parseInt(size, 10);
+      filePath = `${filePath}_${sizeInt}`;
+    }
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'Not found' });
     }
