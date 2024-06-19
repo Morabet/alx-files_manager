@@ -80,11 +80,10 @@ class FilesController {
     }
     const userCollection = dbClient.client.db().collection('users');
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-    const fileCollection = dbClient.client.db().collection('files');
-
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+    const fileCollection = dbClient.client.db().collection('files');
     const file = await fileCollection.findOne({
       _id: new ObjectId(fileId), userId: new ObjectId(userId),
     });
@@ -110,11 +109,10 @@ class FilesController {
     }
     const userCollection = dbClient.client.db().collection('users');
     const user = await userCollection.findOne({ _id: new ObjectId(userId) });
-    const fileCollection = dbClient.client.db().collection('files');
-
     if (!user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+    const fileCollection = dbClient.client.db().collection('files');
     const parentObjectId = parentId === '0' ? 0 : new ObjectId(parentId);
     const pageNumber = parseInt(page, 10);
     const pageSize = 20;
