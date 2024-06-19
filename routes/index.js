@@ -15,5 +15,7 @@ router.get('/users/me', (req, res) => AuthController.getMe(req, res));
 router.post('/files', (req, res) => FilesController.postUpload(req, res));
 router.get('/files/:id', (req, res) => FilesController.getShow(req, res));
 router.get('/files', (req, res) => FilesController.getIndex(req, res));
+router.put('/files/:id/publish', (req, res) => FilesController.putPublish(req, res));
+router.put('/files/:id/unpublish', (req, res) => FilesController.putUnpublish(req, res));
 
 export default router;
