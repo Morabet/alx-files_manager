@@ -7,10 +7,10 @@ import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 import AuthController from '../controllers/AuthController';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(chaiHttp);
 
-describe('AuthController', () => {
+describe('authController', () => {
   let server;
   let sandbox;
 
@@ -37,8 +37,8 @@ describe('AuthController', () => {
     sandbox.restore();
   });
 
-  describe('GET /connect', () => {
-    it('should return status 200 and token on valid credentials', (done) => {
+  describe('gET /connect', () => {
+    it('should return status 200 and token on valid credentials', () => new Promise((done) => {
       const email = 'test@example.com';
       const password = 'password';
       const hashedPassword = sha1(password);
@@ -64,9 +64,9 @@ describe('AuthController', () => {
           expect(setStub.calledOnce).to.be.true;
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on invalid credentials', (done) => {
+    it('should return status 401 on invalid credentials', () => new Promise((done) => {
       const email = 'test@example.com';
       const password = 'wrongpassword';
       const base64Credentials = Buffer.from(`${email}:${password}`).toString('base64');
@@ -81,20 +81,20 @@ describe('AuthController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
-    it('should return status 500 on missing authorization header', (done) => {
+    it('should return status 500 on missing authorization header', () => new Promise((done) => {
       chai.request(server)
         .get('/connect')
         .end((err, res) => {
           expect(res).to.have.status(500);
           done();
         });
-    });
+    }));
   });
 
-  describe('GET /disconnect', () => {
-    it('should return status 204 on valid token', (done) => {
+  describe('gET /disconnect', () => {
+    it('should return status 204 on valid token', () => new Promise((done) => {
       const token = 'validtoken';
       const key = `auth_${token}`;
 
@@ -108,9 +108,9 @@ describe('AuthController', () => {
           expect(res).to.have.status(204);
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on invalid token', (done) => {
+    it('should return status 401 on invalid token', () => new Promise((done) => {
       const token = 'invalidtoken';
 
       sandbox.stub(redisClient, 'get').withArgs(`auth_${token}`).resolves(null);
@@ -122,11 +122,11 @@ describe('AuthController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
   });
 
-  describe('GET /users/me', () => {
-    it('should return status 200 and user information on valid token', (done) => {
+  describe('gET /users/me', () => {
+    it('should return status 200 and user information on valid token', () => new Promise((done) => {
       const token = 'validtoken';
       const key = `auth_${token}`;
       const userId = new ObjectId().toString();
@@ -145,9 +145,9 @@ describe('AuthController', () => {
           expect(findOneStub.calledOnce).to.be.true;
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on invalid token', (done) => {
+    it('should return status 401 on invalid token', () => new Promise((done) => {
       const token = 'invalidtoken';
 
       sandbox.stub(redisClient, 'get').withArgs(`auth_${token}`).resolves(null);
@@ -159,6 +159,6 @@ describe('AuthController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
   });
 });

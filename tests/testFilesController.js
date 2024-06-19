@@ -9,10 +9,10 @@ import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
 import FilesController from '../controllers/FilesController';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(chaiHttp);
 
-describe('FilesController', () => {
+describe('filesController', () => {
   let server;
   let sandbox;
 
@@ -42,8 +42,8 @@ describe('FilesController', () => {
     sandbox.restore();
   });
 
-  describe('POST /files', () => {
-    it('should return status 201 and file data on valid request', (done) => {
+  describe('pOST /files', () => {
+    it('should return status 201 and file data on valid request', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileData = {
@@ -74,9 +74,9 @@ describe('FilesController', () => {
           expect(res.body).to.have.property('parentId').that.equals(0);
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       const fileData = {
         name: 'test.txt',
         type: 'file',
@@ -93,13 +93,13 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
     // Add more tests for missing fields and invalid data...
   });
 
-  describe('GET /files/:id', () => {
-    it('should return status 200 and file data on valid request', (done) => {
+  describe('gET /files/:id', () => {
+    it('should return status 200 and file data on valid request', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -129,9 +129,9 @@ describe('FilesController', () => {
           expect(res.body).to.have.property('parentId').that.equals(file.parentId === 0 ? '0' : file.parentId.toString());
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       const fileId = new ObjectId();
 
       sandbox.stub(redisClient, 'get').withArgs('auth_invalidtoken').resolves(null);
@@ -143,9 +143,9 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
-    it('should return status 404 when file is not found', (done) => {
+    it('should return status 404 when file is not found', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -161,11 +161,11 @@ describe('FilesController', () => {
           expect(res).to.have.status(404);
           done();
         });
-    });
+    }));
   });
 
-  describe('GET /files', () => {
-    it('should return status 200 and list of files with pagination', (done) => {
+  describe('gET /files', () => {
+    it('should return status 200 and list of files with pagination', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const files = [
@@ -210,9 +210,9 @@ describe('FilesController', () => {
           expect(res.body.length).to.equal(2);
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       sandbox.stub(redisClient, 'get').withArgs('auth_invalidtoken').resolves(null);
 
       chai.request(server)
@@ -222,11 +222,11 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
   });
 
-  describe('PUT /files/:id/publish', () => {
-    it('should return status 200 and updated file data on valid request', (done) => {
+  describe('pUT /files/:id/publish', () => {
+    it('should return status 200 and updated file data on valid request', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -258,9 +258,9 @@ describe('FilesController', () => {
           expect(res.body).to.have.property('parentId').that.equals(file.parentId === 0 ? '0' : file.parentId.toString());
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       const fileId = new ObjectId();
 
       sandbox.stub(redisClient, 'get').withArgs('auth_invalidtoken').resolves(null);
@@ -272,9 +272,9 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
-    it('should return status 404 when file is not found', (done) => {
+    it('should return status 404 when file is not found', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -290,11 +290,11 @@ describe('FilesController', () => {
           expect(res).to.have.status(404);
           done();
         });
-    });
+    }));
   });
 
-  describe('PUT /files/:id/unpublish', () => {
-    it('should return status 200 and updated file data on valid request', (done) => {
+  describe('pUT /files/:id/unpublish', () => {
+    it('should return status 200 and updated file data on valid request', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -326,9 +326,9 @@ describe('FilesController', () => {
           expect(res.body).to.have.property('parentId').that.equals(file.parentId === 0 ? '0' : file.parentId.toString());
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       const fileId = new ObjectId();
 
       sandbox.stub(redisClient, 'get').withArgs('auth_invalidtoken').resolves(null);
@@ -340,9 +340,9 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
-    it('should return status 404 when file is not found', (done) => {
+    it('should return status 404 when file is not found', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -358,11 +358,11 @@ describe('FilesController', () => {
           expect(res).to.have.status(404);
           done();
         });
-    });
+    }));
   });
 
-  describe('GET /files/:id/data', () => {
-    it('should return status 200 and file data on valid request', (done) => {
+  describe('gET /files/:id/data', () => {
+    it('should return status 200 and file data on valid request', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -391,9 +391,9 @@ describe('FilesController', () => {
           expect(res.text).to.equal('Hello World');
           done();
         });
-    });
+    }));
 
-    it('should return status 401 on unauthorized request', (done) => {
+    it('should return status 401 on unauthorized request', () => new Promise((done) => {
       const fileId = new ObjectId();
 
       sandbox.stub(redisClient, 'get').withArgs('auth_invalidtoken').resolves(null);
@@ -405,9 +405,9 @@ describe('FilesController', () => {
           expect(res).to.have.status(401);
           done();
         });
-    });
+    }));
 
-    it('should return status 404 when file is not found', (done) => {
+    it('should return status 404 when file is not found', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -423,9 +423,9 @@ describe('FilesController', () => {
           expect(res).to.have.status(404);
           done();
         });
-    });
+    }));
 
-    it('should return status 404 when file does not exist on disk', (done) => {
+    it('should return status 404 when file does not exist on disk', () => new Promise((done) => {
       const token = 'validtoken';
       const userId = new ObjectId();
       const fileId = new ObjectId();
@@ -451,6 +451,6 @@ describe('FilesController', () => {
           expect(res).to.have.status(404);
           done();
         });
-    });
+    }));
   });
 });

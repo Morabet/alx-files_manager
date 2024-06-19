@@ -1,5 +1,9 @@
 import sha1 from 'sha1';
+import Queue from 'bull';
 import dbClient from '../utils/db';
+
+// Create a Bull queue named userQueue
+const userQueue = new Queue('userQueue');
 
 class UsersController {
   static async postNew(req, res) {
@@ -14,7 +18,10 @@ class UsersController {
       if (user) res.status(400).json({ error: 'Already exist' });
       else {
         const result = await userCollection.insertOne({ email, password: sha1(password) });
-        res.status(201).json({ id: result.insertedId, email });
+        const userId = result.insertedId;
+        // Add job to userQueue to send welcome email
+        await userQueue.add({ userId });
+        res.status(201).json({ id: userId, email });
       }
     }
   }

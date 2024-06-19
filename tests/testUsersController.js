@@ -5,10 +5,10 @@ import { ObjectId } from 'mongodb';
 import dbClient from '../utils/db';
 import UsersController from '../controllers/UsersController';
 
-const expect = chai.expect;
+const { expect } = chai;
 chai.use(chaiHttp);
 
-describe('UsersController', () => {
+describe('usersController', () => {
   let server;
   let sandbox;
 
@@ -32,8 +32,8 @@ describe('UsersController', () => {
     sandbox.restore();
   });
 
-  describe('POST /users', () => {
-    it('should return status 201 and user data on valid request', (done) => {
+  describe('pOST /users', () => {
+    it('should return status 201 and user data on valid request', () => new Promise((done) => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
@@ -62,9 +62,9 @@ describe('UsersController', () => {
 
           done();
         });
-    });
+    }));
 
-    it('should return status 400 when email is missing', (done) => {
+    it('should return status 400 when email is missing', () => new Promise((done) => {
       const userData = {
         password: 'password123',
       };
@@ -77,9 +77,9 @@ describe('UsersController', () => {
           expect(res.body).to.have.property('error').that.equals('Missing email');
           done();
         });
-    });
+    }));
 
-    it('should return status 400 when password is missing', (done) => {
+    it('should return status 400 when password is missing', () => new Promise((done) => {
       const userData = {
         email: 'test@example.com',
       };
@@ -92,9 +92,9 @@ describe('UsersController', () => {
           expect(res.body).to.have.property('error').that.equals('Missing password');
           done();
         });
-    });
+    }));
 
-    it('should return status 400 when email already exists', (done) => {
+    it('should return status 400 when email already exists', () => new Promise((done) => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
@@ -110,6 +110,6 @@ describe('UsersController', () => {
           expect(res.body).to.have.property('error').that.equals('Already exist');
           done();
         });
-    });
+    }));
   });
 });

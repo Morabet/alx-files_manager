@@ -43,7 +43,7 @@ describe('appController', () => {
     sandbox.restore();
   });
 
-  describe('GET /status', () => {
+  describe('gET /status', () => {
     it('should return status 200 with redis and db status', () => new Promise((done) => {
       chai.request(server)
         .get('/status')
@@ -56,7 +56,7 @@ describe('appController', () => {
     }));
   });
 
-  describe('GET /stats', () => {
+  describe('gET /stats', () => {
     it('should return status 200 with number of users and files', () => new Promise((done) => {
       // Stub nbUsers and nbFiles
       sandbox.stub(dbClient, 'nbUsers').resolves(10);
