@@ -225,8 +225,8 @@ class FilesController {
     const token = req.headers['x-token'];
     const userId = await redisClient.get(`auth_${token}`);
 
-    const userCollection = dbClient.db.collection('users');
-    const filesCollection = dbClient.db.collection('files');
+    const userCollection = dbClient.client.db().collection('users');
+    const filesCollection = dbClient.client.db().collection('files');
 
     const file = await filesCollection.findOne({ _id: new ObjectId(fileId) });
 
